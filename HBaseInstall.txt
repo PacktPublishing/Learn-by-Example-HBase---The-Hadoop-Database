@@ -1,0 +1,61 @@
+1) Download hbase from https://hbase.apache.org/ (1.2.1)
+
+2) untar and move to a convenient location. Rename the extracted folder to HBase
+
+3) In HBase/conf/hbase-site.xml, add the following in between the configuration tags
+
+<property>
+   <name>hbase.cluster.distributed</name>
+   <value>true</value>
+</property>
+
+<property>
+   <name>hbase.rootdir</name>
+   <value>hdfs://localhost:9000/hbase</value>
+</property>
+
+
+	<property>
+      <name>hbase.zookeeper.property.dataDir</name>
+      <value><Any Directory>/zookeeper</value>
+   </property>
+
+4) In HBase/conf/hbase-env.sh 
+Update JAVA_HOME 
+On Macs : export JAVA_HOME=$(/usr/libexec/java_home)
+On Linux machines: Google for the Java home directory for your Linux and Java versions
+
+5) update .bash_profile on Mac/.bashrc on Linux
+export HBASE_HOME=$HOME/HBase
+export PATH="$HBASE_HOME/bin:$PATH"
+
+6) Start HBase
+
+> cd $HBASE_HOME
+>./bin/start-hbase.sh
+>./bin/local-master-backup.sh start 2
+> ./bin/./local-regionservers.sh start 3
+
+Check the web interface at 
+http://localhost:16010
+
+7) Start HBase shell 
+> hbase shell 
+
+8) Try the following commands 
+
+hbase(main):001:0> status
+hbase(main):003:0> list
+hbase(main):004:0> create 'Sales','Transactions'
+hbase(main):006:0> put 'Sales','1','Transactions:Date','20160501'
+hbase(main):007:0> put 'Sales','1','Transactions:Amount','3000'
+hbase(main):008:0> scan 'Sales'
+hbase(main):009:0> exit
+
+9) Stopping HBase
+$ ./bin/./local-regionservers.sh stop 3
+$ ls /tmp
+$ cat /tmp/hbase-<YOUR USER NAME>-2-master.pid|xargs kill -9
+$ ./bin/stop-hbase.sh
+
+
